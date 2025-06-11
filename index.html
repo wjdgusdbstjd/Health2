@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>냉장고 AI 시뮬레이터</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=yBvkKGrp"></script>
+    <meta name="referrer" content="no-referrer">
+    <style>
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        html,
+        body {
+            font-family: 'Pretendard-Regular';
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #17181B;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            box-sizing: border-box;
+            background-image: url('Group 42.png');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-attachment: fixed;
+            /* 스크롤해도 화면에 고정 */
+            background-size: 75vw;
+            overflow: hidden;
+            /* background-image: url('img/ChatGPT Image 2025년 6월 11일 오전 12_08_49.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: right; */
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        /* .main-bg {
+            position: relative;
+            top: -9vw;
+            left: -0.4vw;
+            width: 60vw;
+        } */
+
+        .app-wrapper {
+            position: relative;
+            /* left: 10vh; */
+            right: 6.5vw;
+            /* bottom: 1vh; */
+            border-radius: 3vh;
+            height: 100vh;
+            aspect-ratio: 9/16;
+            width: auto;
+            max-width: calc(100vh * 9 / 16);
+            background-color: #17181B;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2.4vh 1.6vh;
+            font-size: 1.8vh;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 0.4vh;
+        }
+
+        /* 인바디 카드 */
+        .card {
+            background: #0285f7;
+            padding: 2.4vh;
+            margin: 0.4vh 0.7vh;
+            border-radius: 2.4vh;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .card p {
+            margin: 0.4vh 0;
+            font-weight: normal;
+            font-size: 1.6vh;
+        }
+
+        /* 상태 태그(체지방, 근육량) */
+        .status-tags {
+            display: flex;
+            gap: 2vh;
+            margin-top: 2.6vh;
+            flex-wrap: wrap;
+        }
+
+        .status-tag {
+            background: white;
+            color: #0285f7;
+            border-radius: 3.6vh;
+            padding: 0.7vh 2.6vh;
+            font-size: 1.5vh;
+            font-weight: bold;
+            margin-bottom: 1.6vh;
+        }
+
+        /* 버튼 행 */
+        .button-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 1vh 0.8vh;
+            gap: 2vh;
+            flex-shrink: 0;
+            position: relative;
+            top: 0.1vh;
+        }
+
+        .circle-button {
+            background: white;
+            color: #0285f7;
+            padding: 1.6vh 0;
+            border-radius: 3.6vh;
+            font-size: 2.4vh;
+            font-weight: bold;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* 메뉴 카드(저녁 메뉴 추천) */
+        .menu-card {
+            background: white;
+            color: black;
+            margin: 0.8vh 0.8vh;
+            padding: 1.6vh;
+            border-radius: 2.4vh;
+            flex-shrink: 0;
+            height: 22vh;
+        }
+
+        .menu-card .section-title {
+            font-size: 2.7vh;
+            margin: 0.8vh;
+        }
+
+        .menu-card-content {
+            display: flex;
+        }
+
+        .menu-card-content p {
+            font-size: 1.7vh;
+            margin-left: 1.6vh;
+        }
+
+        .menu-card-content p strong {
+            color: #0285f7;
+        }
+
+        .menu-card-content p span {
+            color: #0285f7;
+            position: relative;
+            top: 2vh;
+            font-weight: 600;
+        }
+
+        .menu-card img {
+            width: 39%;
+            border-radius: 1.5vh;
+            margin-top: 0.3vh;
+            margin-left: 0.7vh;
+        }
+
+        .menu-card button {
+            margin-top: 1.2vh;
+            background: #0285f7;
+            color: white;
+            border: none;
+            padding: 0.6vh 1.8vh;
+            border-radius: 1.6vh;
+            font-weight: bold;
+            font-size: 1.4vh;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            left: 42.5vh;
+            bottom: 3.8vh;
+        }
+
+        .menu-card2 {
+            background: white;
+            color: black;
+            margin: 0.8vh 0.8vh;
+            padding: 1.8vh;
+            border-radius: 2.4vh;
+            flex-shrink: 0;
+            height: 14.6vh;
+            position: relative;
+            right: 0.4vh;
+        }
+
+        .section-title {
+            font-size: 2.8vh;
+            font-weight: bold;
+            color: #0285f7;
+            margin-bottom: 0.8vh;
+        }
+
+        .button-row-1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin: 0.8vh 0.8vh;
+            flex-shrink: 0;
+            position: relative;
+            bottom: 0.7vh;
+        }
+
+        /* 태그 그룹(친구 공유) */
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8vh;
+            margin-top: 0.6vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tag {
+            background: #0285f7;
+            color: white;
+            padding: 0.5vh 1.2vh;
+            border-radius: 2.4vh;
+            font-size: 1.6vh;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        /* 모드 전환 카드 */
+        .mode-switch {
+            background: white;
+            color: black;
+            margin: 0.8vh 0.7vh;
+            padding: 1.6vh;
+            border-radius: 2.4vh;
+            flex-shrink: 0;
+            height: 14.6vh;
+            position: relative;
+            left: 0.4vh;
+        }
+
+        .mode-switch .section-title {
+            font-size: 2.7vh;
+            margin-top: 0.7vh;
+            position: relative;
+            bottom: 0.6vh;
+            left: 0.3vh;
+        }
+
+        .mode-switch button {
+            background: #ffffff;
+            border: 0.3vh solid #0285f7;
+            color: #0285f7;
+            padding: 0.5vh 1.6vh;
+            border-radius: 2.4vh;
+            font-weight: bold;
+            margin-right: 0.9vh;
+            margin-left: 0.4vh;
+            cursor: pointer;
+            font-size: 1.4vh;
+            user-select: none;
+        }
+
+        /* 하단 도움말 & 로봇 이미지 */
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin: 0.8vh 0.8vh;
+            flex-shrink: 0;
+        }
+
+        .help-card {
+            background: #0285f7;
+            padding: 1.6vh;
+            border-radius: 2.4vh;
+            color: white;
+            font-weight: bold;
+            line-height: 1.5;
+            font-size: 1.6vh;
+            user-select: none;
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 26vh;
+            height: 14vh;
+            position: relative;
+            left: 0.4vh;
+            bottom: 5.8vh;
+        }
+
+        .help-card p {
+            font-size: 1.8vh;
+            position: relative;
+            top: 0.7vh;
+        }
+
+        .help-card button {
+            margin-top: 0.3vh;
+            background: white;
+            padding: 1.2vh 1.6vh;
+            border-radius: 2.4vh;
+            font-weight: bold;
+            font-size: 1.4vh;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #micButton {
+            font-size: 1.8vh;
+            padding: 0.3vh 2.0vh;
+            background-color: #ffffff;
+            color: #0285f7;
+            border: none;
+            border-radius: 3.6vh;
+            cursor: pointer;
+            margin: 1vh auto;
+            display: block;
+            font-weight: bold;
+            flex-shrink: 0;
+            user-select: none;
+            position: relative;
+            bottom: 0.8vh;
+        }
+
+        .robot-container {
+            flex-shrink: 0;
+            margin-left: 0.8vh;
+        }
+
+        .robot-container img {
+            width: 18vh;
+            height: auto;
+            margin-right: 3vh;
+        }
+
+        /* =============================================================================
+           4) 채팅 화면(#chatContent, #chatBox, 말풍선 등) – 역시 0.8배 축소
+        =============================================================================== */
+        #initialContent {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+
+        #chatContent {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: #17181B;
+            min-height: 0;
+            position: relative;
+        }
+
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.8vh;
+            margin: 0.8vh 0.8vh 2.4vh;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        /* 프로필 + 말풍선 구조 */
+        .message {
+            display: flex;
+            align-items: flex-end;
+            max-width: 100%;
+        }
+
+        .message.bot {
+            flex-direction: row;
+            margin-top: 0.8vh;
+            margin-bottom: 0.8vh;
+        }
+
+        .message.user {
+            flex-direction: row;
+            align-self: flex-end;
+            margin-top: 0.8vh;
+            margin-bottom: 5vh;
+        }
+
+        .profile {
+            width: 5vh;
+            height: 5vh;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 1vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 2vh;
+        }
+
+        .profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile.user {
+            background-color: #0285f7;
+            margin-left: 2vh;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 1vh 2vh;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            font-size: 2vh;
+            line-height: 1.2;
+        }
+
+        /* 봇 말풍선 */
+        .bubble.bot {
+            background-color: #fff;
+            color: #0285f7;
+            align-self: flex-start;
+            font-weight: 600;
+            border-radius: 2vh 2vh 2vh 0.5vh;
+        }
+
+        /* 유저 말풍선 */
+        .bubble.user {
+            position: relative;
+            /* 이거 꼭 있어야 함! */
+            background-color: #0285f7;
+            color: #fff;
+            align-self: flex-end;
+            font-weight: 600;
+            border-radius: 2vh 2vh 0.5vh 2vh;
+            padding: 1vh 2vh;
+            /* overflow는 visible로 둬야 시간이 말풍선 밖에 보여짐 */
+            overflow: visible;
+        }
+
+        .bubble img {
+            max-width: 100%;
+            max-height: 16.0vh;
+            object-fit: cover;
+            border-radius: 1vh;
+        }
+
+        /* ============================
+           사용자 말풍선 오른쪽 아래에 발화 시간 표시
+        ============================ */
+        .bubble.user .speech-duration {
+            position: absolute;
+            top: 100%;
+            right: 0.6vh;
+            margin-top: 0.8vh;
+            font-size: 1.4vh;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.3vh;
+            overflow: visible;
+        }
+
+        .bubble.user .speech-duration img {
+            width: 1.6vh;
+            height: 1.6vh;
+            border-radius: 0;
+            overflow: visible;
+            margin-right: 0.7vh;
+        }
+
+        .typing-indicator {
+            width: 5.6vh;
+            height: 2.8vh;
+            background: #333;
+            border-radius: 2.4vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .typing-indicator .dot {
+            width: 0.8vh;
+            height: 0.8vh;
+            background: #0285f7;
+            border-radius: 50%;
+            margin: 0 0.4vh;
+            animation: blink 1s infinite;
+        }
+
+        .typing-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+
+            0%,
+            80%,
+            100% {
+                opacity: 0.2;
+            }
+
+            40% {
+                opacity: 1;
+            }
+        }
+
+        #inputArea {
+            /* padding: 1.2vh; */
+            padding: 3vh;
+            margin: 0 0.8vh 0.8vh;
+            background: #222;
+            border-radius: 2.4vh 2.4vh 0 0;
+            display: flex;
+            align-items: center;
+            gap: 1.2vh;
+        }
+
+        #inputArea span {
+            flex: 1;
+            color: #888;
+            font-size: 1.9vh;
+        }
+
+        /* #inputArea .input-bar {
+            display: flex;
+            flex-flow: column;
+        } */
+
+        #inputArea .waveform {
+            flex: 3;
+            height: 0.8vh;
+            background: #555;
+            border-radius: 0.8vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #inputArea .waveform::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, #0285f7, transparent);
+            animation: wave 1s infinite;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        #inputArea button {
+            background: #0285f7;
+            color: white;
+            border: none;
+            width: 4.0vh;
+            height: 4.0vh;
+            border-radius: 50%;
+            font-size: 2.4vh;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* videoOverlay 스타일 */
+        #videoOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #17181B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #videoOverlay video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* modeOverlay 스타일 */
+        #modeOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #modeOverlay .mode-content {
+            margin-top: 8vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        #modeOverlay .mode-content p {
+            font-size: 3vh;
+            line-height: 1.3;
+            font-weight: 600;
+            margin: 0 0 4vh 0;
+            position: relative;
+            top: 4vh;
+        }
+
+        #modeOverlay .mode-content .highlight {
+            color: #0285f7;
+        }
+
+        #modeOverlay .mode-content .robot-placeholder {
+            width: 32vh;
+            height: auto;
+            margin-top: 5vh;
+            margin-bottom: 4vh;
+            background: none;
+            position: relative;
+            right: 3vh;
+        }
+
+        #modeOverlay .mode-content .home-button {
+            background: #0285f7;
+            color: #ffffff;
+            border: none;
+            padding: 1.6vh 3vh;
+            border-radius: 3vh;
+            font-size: 2vh;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            top: 5vh;
+        }
+
+        #modeOverlay .mode-content .home-button:active {
+            opacity: 0.8;
+        }
+
+        /* captureReviewOverlay 스타일 */
+        #captureReviewOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10002;
+        }
+
+        #captureReviewOverlay img {
+            max-width: 80%;
+            max-height: 60%;
+            border: 0.3vh solid white;
+            border-radius: 1.2vh;
+            margin-bottom: 3vh;
+        }
+
+        #captureReviewOverlay .review-buttons {
+            display: flex;
+            gap: 4vh;
+        }
+
+        #captureReviewOverlay .review-buttons button {
+            background: #0285f7;
+            color: white;
+            border: none;
+            padding: 1.6vh 3vh;
+            border-radius: 2vh;
+            font-size: 2vh;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #captureReviewOverlay .review-buttons button.retake {
+            background: white;
+            color: #0285f7;
+        }
+
+        /* fridgeOverlay 스타일 */
+        #fridgeOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #17181B;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            color: white;
+            font-size: 2.5vh;
+        }
+
+        #fridgeOverlay .overlay-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2vh;
+        }
+
+        #fridgeOverlay .overlay-content .robot-img {
+            width: 10vh;
+            position: relative;
+            top: 3.5vh;
+        }
+
+        #fridgeOverlay .overlay-content .fridge-img {
+            width: 60vh;
+        }
+
+        #fridgeOverlay .overlay-content p {
+            font-size: 3vh;
+        }
+
+        #fridgeOverlay .progress-content {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            width: 50vh;
+            height: 30vh;
+            background: rgba(238, 238, 238, 0.37);
+            backdrop-filter: blur(0.5vh);
+            -webkit-backdrop-filter: blur(0.5vh);
+            border-radius: 2vh;
+            position: absolute;
+            top: 40vh;
+        }
+
+        #fridgeOverlay .progress-label {
+            font-size: 3vh;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            bottom: 12vh;
+        }
+
+        #fridgeOverlay .progress-circle {
+            width: 12vh;
+            height: 12vh;
+            position: relative;
+            top: 4.5vh;
+        }
+
+        #fridgeOverlay .progress-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ─────────────────────────────────────────────────────────
+   1) recipeBanner 전체를 검은 배경으로 덮고, 상단에 제목을 표시
+───────────────────────────────────────────────────────── */
+        #recipeBanner {
+            position: absolute;
+            top: 4vh;
+            left: 0;
+            width: 100%;
+            background: #17181B;
+            /* 검은 배경 */
+            display: flex;
+            flex-direction: column;
+            /* 제목 → 비디오 순서로 세로 정렬 */
+            align-items: center;
+            /* 가로 중앙 정렬 */
+            z-index: 5000;
+            /* padding-top: 4vh; */
+            /* 상단 여유 공간 (top-bar 바로 아래) */
+        }
+
+        /* 3) 비디오 너비 100% 유지, 검은 배경 안에서 꽉 차도록 */
+        #recipeBanner video {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 0;
+            /* 굳이 둥글게 처리하지 않음 */
+        }
+
+        #recipeBanner img {
+            width: 5vh;
+        }
+
+        /* 채팅 영역이 레시피 배너 아래부터 올라오도록 여백 조정 */
+        #chatBox.withRecipe {
+            margin-top: 8vh;
+        }
+
+        /* ============================
+           ▼ 추천 오버레이(#recommendOverlay, #tofuOverlay)
+             → #chatContent 전체를 덮도록 설정
+        ============================ */
+        #recommendOverlay,
+        #tofuOverlay {
+            position: absolute;
+            /* #chatContent 내부에서 절대 위치 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #17181B;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            /* 채팅 내용 위에 표시되도록 충분히 크게 */
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           토마토 계란 볶음 추천 (#recommendOverlay 내부)
+        ───────────────────────────────────────────────────────── */
+        #recommendOverlay .tomato-content img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            position: relative;
+            bottom: 9vh;
+        }
+
+        #recommendOverlay .tomato-text {
+            text-align: center;
+            padding: 2vh 4vw;
+        }
+
+        #recommendOverlay .tomato-text .question {
+            font-size: 2.9vh;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1vh;
+            color: #FFFFFF;
+            position: relative;
+            bottom: 8vh;
+        }
+
+        #recommendOverlay .button-group {
+            display: flex;
+            gap: 3vw;
+        }
+
+        #recommendOverlay .btn-confirm {
+            background-color: #0285f7;
+            color: #fff;
+            padding: 1.6vh 4vw;
+            border-radius: 5.4vh;
+            font-size: 2vh;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            bottom: 3vh;
+        }
+
+        #recommendOverlay .btn-other {
+            background-color: #fff;
+            color: #0285f7;
+            padding: 1.6vh 4vw;
+            border-radius: 5.4vh;
+            font-size: 2vh;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            bottom: 3vh;
+        }
+
+        #recommendOverlay .subtitle {
+            font-size: 2.5vh;
+            font-weight: 600;
+            color: #0285f7;
+            margin-top: 1vh;
+            position: relative;
+            bottom: 5vh;
+        }
+
+        #recommendOverlay .complete {
+            width: 20vh;
+            z-index: 25;
+            position: relative;
+            bottom: 12vh;
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           두부 유부 초밥 추천 (#tofuOverlay 내부)
+        ───────────────────────────────────────────────────────── */
+        #tofuOverlay .tofu-content img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            position: relative;
+            bottom: 9vh;
+        }
+
+        #tofuOverlay .tofu-text {
+            text-align: center;
+            padding: 2vh 4vw;
+        }
+
+        #tofuOverlay .tofu-text .title {
+            font-size: 2.9vh;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1vh;
+            color: #FFFFFF;
+            position: relative;
+            bottom: 8vh;
+        }
+
+        #tofuOverlay .tofu-text .subtitle {
+            font-size: 2.5vh;
+            font-weight: 600;
+            color: #0285f7;
+            margin-top: 1vh;
+            position: relative;
+            bottom: 5vh;
+        }
+
+        #tofuOverlay .tofu-button {
+            background-color: #0285f7;
+            color: #fff;
+            padding: 1.6vh 4vw;
+            border-radius: 5.4vh;
+            font-size: 2vh;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            bottom: 5vh;
+        }
+
+        #tofuOverlay .complete {
+            width: 20vh;
+            z-index: 25;
+            position: relative;
+            bottom: 12vh;
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           ▼ 기록 화면 (case 'completed' 시 띄울 오버레이)
+        ───────────────────────────────────────────────────────── */
+        #recordOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #17181B;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+
+        #recordOverlay .record-text {
+            color: #ffffff;
+            font-size: 3vh;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 4vh;
+            line-height: 1.3;
+        }
+
+        #recordOverlay .record-robot {
+            width: 32vh;
+            height: auto;
+            margin-bottom: 5vh;
+            position: relative;
+            right: 3vh;
+        }
+
+        #recordOverlay .record-home-button {
+            background: #0285f7;
+            color: #ffffff;
+            border: none;
+            padding: 1.6vh 3vh;
+            border-radius: 3vh;
+            font-size: 2vh;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #recordOverlay .record-home-button:active {
+            opacity: 0.8;
+        }
+
+
+        #recipeBanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #17181B;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5000;
+            /* padding-top: 4vh; */
+        }
+
+        #recipeBanner img {
+            width: 20vh;
+            margin-bottom: 3vh;
+        }
+
+
+        #recipeBanner video {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        /* 하단 도움말 오버레이 스타일 */
+        #helpOverlay {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            /* 높이/위치는 JS로 동적으로 설정 */
+            background: #17181B;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            /* recipeBanner가 z-index:5000이므로 그 위로 올라가지 않음 */
+            color: #fff;
+            text-align: center;
+        }
+
+        #helpOverlay img {
+            width: 24vh;
+            margin-bottom: 2vh;
+        }
+
+        #helpOverlay .help-text {
+            font-size: 2.5vh;
+            margin-bottom: 4vh;
+        }
+
+        #helpOverlay .home-button {
+            background: #0285f7;
+            color: #ffffff;
+            border: none;
+            padding: 1.6vh 3vh;
+            border-radius: 3vh;
+            font-size: 2vh;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+
+
+        /* 하단 도움말 오버레이 스타일 */
+        #helpOverlay {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            background: #17181B;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* 듣는중 팝업 스타일 */
+        #listeningOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #eeeeee3f;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #fff;
+            padding: 6vh 17vh;
+            border-radius: 1.7vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            /* justify-content: center; */
+            z-index: 10001;
+            text-align: center;
+        }
+
+        #listeningOverlay .listening-content img {
+            width: 13vh;
+            margin-bottom: 1vh;
+            position: relative;
+            bottom: 2vh;
+        }
+
+        #listeningOverlay .listening-content div {
+            font-size: 2.6vh;
+            /* position: relative;
+            top: 1.6vh; */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <img class="main-bg" src="img/스마트 냉장고 터치스크린 인터페이스.png" alt=""> -->
+
+    <div class="app-wrapper">
+        <!-- <button id="testFridgeBtn" style="
+            position: absolute;
+            top: 1vh;
+            right: 1vh;
+            padding: 1vh 2vh;
+            background: #0285f7;
+            color: white;
+            border-radius: 1vh;
+            z-index: 20000;
+        ">프리지 테스트</button>
+
+        <button id="testTofuBtn" style="
+            position: absolute;
+            top: 1vh;
+            right: 10vh;      /* 프리지 테스트 버튼보다 왼쪽으로 10vh 정도 떨어뜨려주세요. */
+            padding: 1vh 2vh;
+            background: #0285f7;
+            color: white;
+            border-radius: 1vh;
+            z-index: 20000;
+        ">두부 화면 테스트</button>
+
+        <button id="testTomatoBtn" style="
+            position: absolute;
+            top: 1vh;
+            right: 20vh;  /* 원하는 위치로 추가 조정 가능 */
+            padding: 1vh 2vh;
+            background: #0285f7;
+            color: white;
+            border-radius: 1vh;
+            z-index: 20000;
+        ">토마토 화면 테스트</button>
+
+        <button id="testListeningBtn">팝업 테스트</button> -->
+        <!-- 상단 정보 바 -->
+        <div class="top-bar">
+            <div id="currentDateTime"></div>
+            <div>16°C 대체로 흐림</div>
+        </div>
+
+        <!-- 초기 화면 -->
+        <div id="initialContent">
+            <div class="card">
+                <div style="font-size: 3.2vh; font-weight: 900;">정현님 안녕하세요!</div>
+                <p>오늘의 인바디가 업데이트되었어요.</p>
+                <div class="status-tags">
+                    <div class="status-tag">체지방률 저번달 대비 0.2% 감소</div>
+                    <div class="status-tag">근육량 저번달 대비 0.2kg 상승</div>
+                </div>
+                <p style="font-size: 1.6vh; margin-top: 0.8vh;">걸음 수 6,356보</p>
+            </div>
+
+            <div class="button-row">
+                <div class="circle-button" onclick="reply('인바디 체크 기능은 준비 중이에요!', () => {
+                        if (!isRecognitionActive) {
+                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                        }
+                    })">
+                    인바디 체크하기
+                </div>
+                <div class="circle-button" onclick="reply('냉장고 스캔 기능은 곧 업데이트될 예정이에요!', () => {
+                        if (!isRecognitionActive) {
+                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                        }
+                    })">
+                    냉장고 스캔
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="section-title">오늘의 저녁 메뉴 추천</div>
+                <div class="menu-card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyNTA2MTBfMTUw/MDAxNzQ5NTM5MTA4MTM0.PqzKSPf5vvunkDYM563K6MI9Mr7bn3epEB2h_wGoZWog.NaA6fckoFEf9BpKkbh6183UZHEpXbAJ2VJP1I_D4F3gg.PNG/salad.png?type=w966"
+                        alt="두부 샐러드">
+                    <p>
+                        현재 재료를 바탕으로 추천드리는 <br>
+                        저녁메뉴는 <strong>[두부 샐러드 조림]</strong> 입니다. <br>
+                        <span>부족한 재료 1개: 발사믹 소스</span>
+                    </p>
+                </div>
+                <button>구매하기</button>
+            </div>
+
+            <div class="button-row-1">
+                <div class="menu-card2" style="flex: 1;">
+                    <div class="section-title">친구와 공유하기</div>
+                    <div class="tag-group">
+                        <div class="tag">김우진</div>
+                        <div class="tag">여정연</div>
+                        <div class="tag">김정현</div>
+                        <div class="tag">김민지</div>
+                        <div class="tag">김동건</div>
+                        <div class="tag">김태양</div>
+                    </div>
+                </div>
+                <div class="mode-switch" style="flex: 1;">
+                    <div class="section-title">현재 모드</div>
+                    <button onclick="reply('일반 모드로 설정되었습니다.', () => {
+                            if (!isRecognitionActive) {
+                                try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                            }
+                        })">일반 모드</button>
+                    <button onclick="reply('잠금 모드로 전환할게요.', () => {
+                            if (!isRecognitionActive) {
+                                try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                            }
+                        })">잠금 모드</button>
+                </div>
+            </div>
+
+            <div class="bottom-row">
+                <div class="help-card">
+                    <p>
+                        도움이 필요하시면 <br>
+                        [ 헬 ]을 불러주세요!<br />
+                    </p>
+                    <button id="micButton">눌러서 부르기</button>
+                </div>
+                <div class="robot-container">
+                    <img src="img/health-motion1.gif" alt="로봇 이미지">
+                </div>
+            </div>
+        </div>
+
+        <!-- 채팅 화면 (초기에는 숨김) -->
+        <div id="chatContent" class="hidden" style="position: relative;">
+            <div id="chatBox"></div>
+            <div id="inputArea">
+                <span>무엇이든 <br>
+                    부탁하세요.</span>
+                <div class="waveform"></div>
+                <button id="sendButton">✓</button>
+            </div>
+
+            <!-- 토마토 계란 볶음 추천 오버레이 -->
+            <div id="recommendOverlay" class="hidden">
+                <img class="complete"
+                    src="https://postfiles.pstatic.net/MjAyNTA2MTBfODQg/MDAxNzQ5NTM5MTA4MDY2.JXi7Egyu7NvnvsYdFk9ATjiaieRih-ec7XVqkWmRgtog.sgLQA00R5UV3KS9o4vqP0RcAg0FVHDXc9mSc8X-tW3og.PNG/refrigerator-txt.png?type=w966"
+                    alt="">
+                <div class="tomato-content">
+                    <img src="https://postfiles.pstatic.net/MjAyNTA2MTBfMjcz/MDAxNzQ5NTM5MTA4MzMy.gvU0F6hSvtRdI4Tl8gqITaydIj4Wl15E_ndTvc4aEj4g.58nG4V1uXCuCo5cL0x4n30ionB_0ODCM00d-QRLQgJsg.PNG/tomato.png?type=w966"
+                        alt="토마토 계란 볶음" />
+                </div>
+                <div class="tomato-text">
+                    <div class="question">
+                        현재 식재료로 가능한 저녁메뉴는 <br />
+                        [ 토마토 계란 볶음 ] 입니다.
+                    </div>
+                    <div class="subtitle">
+                        부족한 재료 : 없음
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn-confirm">진행하기</button>
+                    <button class="btn-other">다른 메뉴 추천</button>
+                </div>
+            </div>
+
+            <!-- 두부 유부 초밥 추천 오버레이 -->
+            <div id="tofuOverlay" class="hidden">
+                <img class="complete"
+                    src="https://postfiles.pstatic.net/MjAyNTA2MTBfODQg/MDAxNzQ5NTM5MTA4MDY2.JXi7Egyu7NvnvsYdFk9ATjiaieRih-ec7XVqkWmRgtog.sgLQA00R5UV3KS9o4vqP0RcAg0FVHDXc9mSc8X-tW3og.PNG/refrigerator-txt.png?type=w966"
+                    alt="">
+                <div class="tofu-content">
+                    <img src="https://postfiles.pstatic.net/MjAyNTA2MTBfMjMw/MDAxNzQ5NTM5MTA4MjE3.eaCD4wIa7wTb4JDn4GS1V2kuOVdk7nn-GmqNVUVuL70g.jW8J9f1jjkde9JeciVcknXijxJcyPyj1o51Rq3G73Hwg.PNG/susi.png?type=w966"
+                        alt="두부 유부 초밥" />
+                </div>
+                <div class="tofu-text">
+                    <div class="title">
+                        현재 식재료로 가능한 저녁메뉴는 <br />
+                        [ 두부 유부 초밥 ] 입니다.
+                    </div>
+                    <div class="subtitle">
+                        부족한 재료 : 발사믹 소스
+                    </div>
+                </div>
+                <button class="tofu-button">다음으로</button>
+            </div>
+        </div>
+
+
+        <div id="helpOverlay">
+            <img src="https://postfiles.pstatic.net/MjAyNTA2MTBfMjU3/MDAxNzQ5NTM5ODQyNzM3.CKoPAd0otmu9B0W64f8vlrIoBFGB4x_1cAdwdhxt8Kkg.mwsxj-HGfakBOqvRbMEfVb4nkPAEi7787rVFht-iPqMg.PNG/헬.png?type=w966"
+                alt="로봇 이미지" />
+            <div class="help-text">요리하실 때 도움이 필요하면<br>언제든 불러주세요!</div>
+            <button class="home-button" onclick="location.reload()">홈 화면으로</button>
+        </div>
+
+        <div id="listeningOverlay">
+            <div class="listening-content">
+                <img src="img/health-motion1.gif" alt="로봇" />
+                <div>듣는 중…</div>
+            </div>
+        </div>
+
+        <audio id="shutterSound" src="positive-notification-alert-351299.mp3" preload="auto"></audio>
+    </div>
+
+    <script>
+
+        // 테스트 버튼으로 팝업 직접 띄우기
+        // document.getElementById('testListeningBtn').addEventListener('click', () => {
+        //     document.getElementById('listeningOverlay').style.display = 'flex';
+        // });
+
+
+
+        // 전역 변수: 음성 녹음 시작 시각 저장
+        let speechStartTime = 0;
+
+        let helpTimer = null;
+
+        // ============================
+        // 1) 기록 화면을 띄우는 함수 정의
+        // ============================
+        function showRecordScreen() {
+            // 이미 떠 있으면 다시 띄우지 않음
+            if (document.getElementById('recordOverlay')) return;
+
+            const overlay = document.createElement('div');
+            overlay.id = 'recordOverlay';
+            overlay.innerHTML = `
+                <div class="record-text">
+                    완성하셨군요!<br/>
+                    사진으로 기록하시겠어요?
+                </div>
+                <img src="img/health-motion2.gif" alt="로봇 이미지" class="record-robot" />
+                <button class="record-home-button">홈 화면으로</button>
+            `;
+            document.querySelector('.app-wrapper').appendChild(overlay);
+
+            // “홈 화면으로” 버튼을 누르면 초기화면으로 복귀(여기서는 간단히 리로드)
+            overlay.querySelector('.record-home-button').addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
+        // ----------------------------
+        // (1) 채팅 영역을 먼저 열고, 두부Overlay를 띄우는 함수
+        // ----------------------------
+        // function openChatAndShowTofu() {
+        //     initialContent.classList.add('hidden');
+        //     chatContent.classList.remove('hidden');
+        //     showTofuOverlay();
+        // }
+        // document.getElementById('testTofuBtn').addEventListener('click', () => {
+        //     openChatAndShowTofu();
+        // });
+
+        // // 채팅 영역 열고 '토마토 계란 볶음' 오버레이 띄우기
+        // function openChatAndShowTomato() {
+        //     initialContent.classList.add('hidden');
+        //     chatContent.classList.remove('hidden');
+        //     showRecommendationOverlay();
+        // }
+        // document.getElementById('testTomatoBtn').addEventListener('click', () => {
+        //     openChatAndShowTomato();
+        // });
+
+
+
+
+
+        // 날짜/시간 업데이트
+        const weekdays = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+        function updateDateTime() {
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekday = weekdays[now.getDay()];
+
+            let hour = now.getHours();
+            const ampm = hour >= 12 ? "PM" : "AM";
+            hour = hour % 12;
+            if (hour === 0) hour = 12;
+            let minute = now.getMinutes();
+            if (minute < 10) minute = "0" + minute;
+
+            const htmlString = `${month}월 ${day}일 ${weekday}&nbsp;&nbsp;&nbsp;&nbsp;${hour}:${minute} ${ampm}`;
+            document.getElementById("currentDateTime").innerHTML = htmlString;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 60 * 1000);
+
+        const chatBox = document.getElementById('chatBox');
+        const micButton = document.getElementById('micButton');
+        const sendButton = document.getElementById('sendButton');
+        const shutterSound = document.getElementById('shutterSound');
+        const initialContent = document.getElementById('initialContent');
+        const chatContent = document.getElementById('chatContent');
+        const recommendOverlay = document.getElementById('recommendOverlay');
+        const tofuOverlay = document.getElementById('tofuOverlay');
+
+        let voices = [], isSpeaking = false, isChatting = false;
+        let isRecognitionActive = false; // 음성 인식 중인지 여부 추적
+
+        // ============================
+        // 말풍선 추가 함수
+        // ============================
+        function addBubble(text, who) {
+            const msgContainer = document.createElement('div');
+            msgContainer.className = `message ${who}`;
+
+            const profile = document.createElement('div');
+            profile.className = `profile ${who}`;
+
+            // 프로필 이미지
+            const img = document.createElement('img');
+            img.src = who === 'bot'
+                ? 'https://postfiles.pstatic.net/MjAyNTA2MTBfMjU3/MDAxNzQ5NTM5ODQyNzM3.CKoPAd0otmu9B0W64f8vlrIoBFGB4x_1cAdwdhxt8Kkg.mwsxj-HGfakBOqvRbMEfVb4nkPAEi7787rVFht-iPqMg.PNG/헬.png?type=w966'
+                : 'https://postfiles.pstatic.net/MjAyNTA2MTBfMTQ5/MDAxNzQ5NTM5MTA4MzMw.XnTL13MoxEGN35F8wSCCBm0jdP_E4cfpDuzKg6fqQK4g.E4m2hmnoRPsHtxczYwVIWn35A47bKdwSCG4Q-qZn0GYg.JPEG/woman.jpg?type=w966';
+            img.referrerPolicy = 'no-referrer';
+            img.alt = who === 'bot' ? 'AI' : 'User';
+            profile.appendChild(img);
+
+            const b = document.createElement('div');
+            b.className = `bubble ${who}`;
+            b.innerText = text;
+
+            if (who === 'bot') {
+                msgContainer.appendChild(profile);
+                msgContainer.appendChild(b);
+            } else {
+                msgContainer.appendChild(b);
+                msgContainer.appendChild(profile);
+            }
+
+            chatBox.appendChild(msgContainer);
+            setTimeout(() => {
+                msgContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 50);
+        }
+
+        // 이미지 포함 버블에도 동일 구조 적용
+        function addMediaBubble(el, who) {
+            const msgContainer = document.createElement('div');
+            msgContainer.className = `message ${who}`;
+
+            const profile = document.createElement('div');
+            profile.className = `profile ${who}`;
+
+            const b = document.createElement('div');
+            b.className = `bubble ${who}`;
+            b.appendChild(el);
+
+            if (who === 'bot') {
+                msgContainer.appendChild(profile);
+                msgContainer.appendChild(b);
+            } else {
+                msgContainer.appendChild(b);
+                msgContainer.appendChild(profile);
+            }
+
+            chatBox.appendChild(msgContainer);
+            setTimeout(() => {
+                msgContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 50);
+        }
+
+        // ============================
+        // 타이핑 인디케이터
+        // ============================
+        function showTypingIndicator() {
+            const indicatorContainer = document.createElement('div');
+            indicatorContainer.className = 'message bot';
+
+            const profile = document.createElement('div');
+            profile.className = 'profile bot';
+
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+
+            indicatorContainer.appendChild(profile);
+            indicatorContainer.appendChild(indicator);
+            chatBox.appendChild(indicatorContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return indicatorContainer;
+        }
+
+        // ============================
+        // 말하기(TTS) 함수
+        // ============================
+        function speak(text, cb) {
+            isSpeaking = true;
+            recognitionWake.abort();
+            recognitionChat.abort();
+            responsiveVoice.speak(text, 'Korean Female', {
+                rate: 1.06,
+                pitch: 1.06,
+                volume: 1.0,
+                onend: () => {
+                    isSpeaking = false;
+                    if (cb) cb();
+                }
+            });
+        }
+
+        // 1) 분할 + 순차 처리 함수
+        function splitAndSpeakBubble(text, who, cb, maxBubbles = 2) {
+            // 문장 단위로 분할
+            const sentences = text.match(/[^\.!\?]+[\.!\?]?/g) || [text];
+            // maxBubbles 만큼 균등 분할: 한 덩어리에 들어갈 문장 수
+            const perBubble = Math.ceil(sentences.length / maxBubbles);
+            // 각 말풍선에 들어갈 텍스트 배열 생성
+            const segments = [];
+            for (let i = 0; i < maxBubbles; i++) {
+                const part = sentences
+                    .slice(i * perBubble, (i + 1) * perBubble)
+                    .join(' ')
+                    .trim();
+                if (part) segments.push(part);
+            }
+
+            // 2) 재귀로 순차 처리
+            function play(idx) {
+                if (idx >= segments.length) {
+                    if (cb) cb();
+                    return;
+                }
+                addBubble(segments[idx], who);
+                speak(segments[idx], () => play(idx + 1));
+            }
+
+            play(0);
+        }
+
+        // 3) reply 에서 기존 splitAndAddBubble 대신 사용
+        function reply(msg, cb) {
+            clearTimeout(helpTimer);
+            splitAndSpeakBubble(msg, 'bot', cb);
+        }
+
+        // ============================
+        // 음성 인식 객체 & 상태
+        // ============================
+        const recognitionWake = new webkitSpeechRecognition();
+        recognitionWake.lang = 'ko-KR';
+        recognitionWake.continuous = true;
+        recognitionWake.interimResults = false;
+        recognitionWake.onresult = e => {
+            const t = e.results[e.results.length - 1][0].transcript.trim();
+            if (!isSpeaking && /^안녕 헬$/.test(t)) {
+                recognitionWake.abort();
+                reply('안녕하세요 정현님!', () => {
+                    if (!isRecognitionActive) {
+                        try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                    }
+                });
+            }
+        };
+
+        const recognitionChat = new webkitSpeechRecognition();
+        recognitionChat.lang = 'ko-KR';
+        recognitionChat.continuous = true;
+        recognitionChat.interimResults = false;
+
+        recognitionChat.onstart = () => {
+            isRecognitionActive = true;
+            speechStartTime = Date.now();
+            // 레시피 영상이 있을 때만 5초 타이머 시작
+            if (document.getElementById('recipeBanner')) {
+                startHelpTimer();
+            }
+        };
+        recognitionChat.onend = () => {
+            isRecognitionActive = false;
+            if (isChatting && !isSpeaking) {
+                setTimeout(() => {
+                    if (!isRecognitionActive) {
+                        try {
+                            recognitionChat.start();
+                        } catch (e) {
+                            console.warn('recognitionChat.start() 예외 무시 (이미 실행 중)');
+                        }
+                    }
+                }, 500);
+            }
+        };
+        // recognitionChat.onerror = () => {
+        //     recognitionChat.abort();
+        // };
+
+        recognitionChat.onspeechstart = () => {
+            console.log('>> speechstart fired, helpOverlay:', document.getElementById('helpOverlay').style.display);
+            clearTimeout(helpTimer);
+            // 도움말 오버레이가 떠 있을 때만 듣는중 팝업 표시
+            const help = document.getElementById('helpOverlay');
+            if (help.style.display === 'flex') {
+                document.getElementById('listeningOverlay').style.display = 'flex';
+            }
+        };
+
+        recognitionChat.onresult = e => {
+            if (isSpeaking) return;
+            const txt = e.results[0][0].transcript.trim();
+
+            // 듣는중 팝업 숨기기
+            document.getElementById('listeningOverlay').style.display = 'none';
+
+            // → addBubble는 딱 한 번만!
+            addBubble(txt, 'user');
+
+            const elapsedMs = Date.now() - speechStartTime;
+            const totalSec = Math.floor(elapsedMs / 1000);
+            const min = Math.floor(totalSec / 60);
+            const sec = totalSec % 60;
+            const formatted = `${min}:${String(sec).padStart(2, '0')}`;
+            const lastMsg = chatBox.lastElementChild;
+            if (lastMsg && lastMsg.classList.contains('user')) {
+                const bubbleEl = lastMsg.querySelector('.bubble.user');
+                const timerDiv = document.createElement('div');
+                timerDiv.className = 'speech-duration';
+                timerDiv.innerHTML = `<img src="https://postfiles.pstatic.net/MjAyNTA2MTBfNTAg/MDAxNzQ5NTM5MTA3OTQz.y2gTH5r_jpZkO0OWMCaWcG8h0ni5PQqRJztyKRxvYt4g.i9x1LQymWd4DiMpVJfyHP7wsnP0RztobcJsluctiJF0g.PNG/mic.png?type=w3840" /> ${formatted}`;
+                bubbleEl.appendChild(timerDiv);
+            }
+
+            // 1) 도움말 오버레이가 떠 있는 경우
+            const help = document.getElementById('helpOverlay');
+            if (help.style.display === 'flex') {
+                hideHelpOverlay();
+                clearTimeout(helpTimer);
+                sendToWit(txt);
+                startHelpTimer();   // 말 끝났으니 다시 5초 타이머
+                return;
+            }
+
+
+
+
+            // Wit.ai 호출
+            sendToWit(txt);
+
+            // 5초 무발화 타이머 다시 시작
+            startHelpTimer();
+        };
+
+
+
+        // ============================
+        // 페이지 로드 & 버튼 리스너
+        // ============================
+        window.onload = () => {
+            voices = speechSynthesis.getVoices();
+        };
+        window.speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+        };
+
+        micButton.addEventListener('click', () => {
+            initialContent.classList.add('hidden');
+            chatContent.classList.remove('hidden');
+
+            shutterSound.play()
+                .then(() => {
+                    shutterSound.pause();
+                    shutterSound.currentTime = 0;
+                })
+                .catch(() => { });
+
+            voices = speechSynthesis.getVoices();
+            isChatting = true;
+            reply('AI 냉장고를 시작합니다.', () => {
+                if (!isRecognitionActive) {
+                    try { recognitionWake.start(); } catch (e) { console.warn(e); }
+                }
+            });
+        });
+
+        sendButton.addEventListener('click', () => {
+            if (!isChatting) return;
+            if (!isRecognitionActive) {
+                try { recognitionChat.start(); } catch (e) { console.warn(e); }
+            }
+        });
+
+        // ============================
+        // 카메라 → 이미지 캡처 → 팝업으로 진행하기/재촬영
+        // ============================
+        function startVideoInBubble() {
+            const overlay = document.createElement('div');
+            overlay.id = 'videoOverlay';
+            const chatContentEl = document.getElementById('chatContent');
+            chatContentEl.appendChild(overlay);
+
+            const videoEl = document.createElement('video');
+            videoEl.autoplay = true;
+            videoEl.playsInline = true;
+            overlay.appendChild(videoEl);
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                .then(stream => {
+                    videoEl.srcObject = stream;
+                    setTimeout(() => captureFromVideo(videoEl, stream, overlay), 3000);
+                })
+                .catch(err => console.error(err));
+        }
+
+        function captureFromVideo(videoEl, stream, overlay) {
+            shutterSound.currentTime = 0;
+            shutterSound.play().catch(err => console.warn('사운드 재생 실패', err));
+
+            const tmp = document.createElement('canvas');
+            tmp.width = videoEl.videoWidth;
+            tmp.height = videoEl.videoHeight;
+            tmp.getContext('2d').drawImage(videoEl, 0, 0);
+            stream.getTracks().forEach(t => t.stop());
+            overlay.remove();
+
+            const dataURL = tmp.toDataURL('image/png');
+            showCaptureReviewOverlay(dataURL);
+        }
+
+        function showCaptureReviewOverlay(dataURL) {
+            const existing = document.getElementById('captureReviewOverlay');
+            if (existing) existing.remove();
+
+            const reviewOverlay = document.createElement('div');
+            reviewOverlay.id = 'captureReviewOverlay';
+            reviewOverlay.innerHTML = `
+                <img src="${dataURL}" alt="캡처된 사진" />
+                <div class="review-buttons">
+                    <button class="proceed">진행하기</button>
+                    <button class="retake">재촬영</button>
+                </div>
+            `;
+            document.querySelector('.app-wrapper').appendChild(reviewOverlay);
+
+            reviewOverlay.querySelector('.proceed').addEventListener('click', () => {
+                reviewOverlay.remove();
+                const img = document.createElement('img');
+                img.src = dataURL;
+                addMediaBubble(img, 'bot');
+                reply('저번 주 눈바디와 비교를 진행했어요. 혹시 최근에 야식 먹은 적이 몇 번 있으신가요? 일주일 전보다 복부 눈바디가 달라진 게 보여요.', () => {
+                    if (!isRecognitionActive) {
+                        try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                    }
+                });
+            });
+
+            reviewOverlay.querySelector('.retake').addEventListener('click', () => {
+                reviewOverlay.remove();
+                startVideoInBubble();
+            });
+        }
+
+        // ============================
+        // 다이어트 모드 화면 전환
+        // ============================
+        function showDietModeScreen(callback) {
+            const overlay = document.createElement('div');
+            overlay.id = 'modeOverlay';
+
+            overlay.innerHTML = `
+                <div class="mode-content">
+                    <p>오늘 <span class="highlight">18:00 ~ 6:00</span> 까지는<br>
+                    냉장고 제어 시간이에요.<br>
+                    과식은 금지!</p>
+                    <img class="robot-placeholder" src="img/health-motion2.gif" alt="로봇 이미지" />
+                    <button class="home-button">홈 화면으로</button>
+                </div>
+            `;
+            document.querySelector('.app-wrapper').appendChild(overlay);
+
+            overlay.querySelector('.home-button').addEventListener('click', () => {
+                overlay.remove();
+                if (callback) callback();
+            });
+
+            setTimeout(() => {
+                const modeOv = document.getElementById('modeOverlay');
+                if (modeOv) {
+                    modeOv.remove();
+                    if (callback) callback();
+                }
+            }, 4000);
+        }
+
+        // ============================
+        // 냉장고 내부 재료 인식 화면 전환
+        // ============================
+        function showFridgeScanScreen(callback) {
+            const overlay = document.createElement('div');
+            overlay.id = 'fridgeOverlay';
+
+            overlay.innerHTML = `
+                <div class="overlay-content">
+                  <img class="robot-img" src="https://postfiles.pstatic.net/MjAyNTA2MTBfMjU3/MDAxNzQ5NTM5ODQyNzM3.CKoPAd0otmu9B0W64f8vlrIoBFGB4x_1cAdwdhxt8Kkg.mwsxj-HGfakBOqvRbMEfVb4nkPAEi7787rVFht-iPqMg.PNG/헬.png?type=w966" alt="로봇 이미지" />
+                  <p>잠시만 기다려주세요.</p>
+                  <img class="fridge-img" src="https://postfiles.pstatic.net/MjAyNTA2MTBfNTQg/MDAxNzQ5NTM5MTA4MTQ1.YNZGpjBeBorX5w8CA9dfeCzzohIXUl7qCE2FhTs08I8g.AuWdZ9-h7nd3mJgY1O0ZrrBwiH4GAAh8vZLFFsKWZqsg.PNG/refrigerator.png?type=w966" alt="냉장고 이미지" />
+
+                  <div class="progress-content">
+                    <div class="progress-circle">
+                      <svg viewBox="0 0 100 100" style="overflow: visible;">
+                        <circle class="circle-bg" cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.2)" stroke-width="10" fill="none" />
+                        <circle class="circle-fg" cx="50" cy="50" r="40" stroke="#fff" stroke-width="10" fill="none"
+                          stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                        <text class="circle-text" x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight=700 fill="white" transform="rotate(90 50 50)">0%</text>
+                      </svg>
+                    </div>
+                    <div class="progress-label">냉장고 내부 인식 중...</div>
+                  </div>
+                </div>
+            `;
+            document.querySelector('.app-wrapper').appendChild(overlay);
+
+            const fgCircle = overlay.querySelector('.circle-fg');
+            const textElem = overlay.querySelector('.circle-text');
+            let progress = 0;
+            const interval = 30;
+            const step = 100 / (3000 / interval);
+            const circumference = 2 * Math.PI * 40;
+
+            const timer = setInterval(() => {
+                progress = Math.min(progress + step, 100);
+                const offset = circumference * (1 - progress / 100);
+                fgCircle.style.strokeDashoffset = offset;
+                textElem.textContent = Math.floor(progress) + '%';
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        overlay.remove();
+                        shutterSound.currentTime = 0;
+                        shutterSound.play().catch(() => { });
+
+
+                        if (callback) callback();
+                    }, 500);
+                }
+            }, interval);
+        }
+
+        // ============================
+        // 레시피 화면 고정 (채팅창 상단에 고정)
+        // ============================
+        function showRecipeScreen() {
+            if (document.getElementById('recipeBanner')) return;
+            const r = document.createElement('div');
+            r.id = 'recipeBanner';
+            r.innerHTML = `
+            <img src="https://postfiles.pstatic.net/MjAyNTA2MTBfNTgg/MDAxNzQ5NTM5MTA4MDY3.VLnIWvdgTsmc79JstY5CMm_OjV1Hvu-1Vd_ytgKLT5cg.96gW22kL3pOv0dprb7nARzpnjYfykfzxvQJpIoXOn94g.PNG/tomato-txt.png?type=w966">
+        <video
+            id="recipeVideo"
+            width="100%"
+            controls
+            autoplay
+            muted
+        >
+            <source src="video/레시피 영상.mp4" type="video/mp4">
+            브라우저가 비디오 태그를 지원하지 않습니다.
+        </video>
+    `;
+            document.getElementById('chatContent').appendChild(r);
+            chatBox.classList.add('withRecipe');
+
+            const vid = document.getElementById('recipeVideo');
+            vid.play().catch(_ => { });
+
+            startHelpTimer();
+        }
+
+        function startHelpTimer() {
+            clearTimeout(helpTimer);
+            // 레시피 영상이 떠 있을 때만 타이머 시작
+            if (!document.getElementById('recipeBanner')) return;
+            helpTimer = setTimeout(showHelpOverlay, 1000);
+        }
+
+        function showHelpOverlay() {
+
+            // console.log('>> showHelpOverlay() called');
+
+
+            const help = document.getElementById('helpOverlay');
+            const banner = document.getElementById('recipeBanner');
+            const bannerRect = banner?.getBoundingClientRect();
+            const bannerHeight = bannerRect ? bannerRect.height : 0;
+
+            // 레시피 영상 바로 아래부터 오버레이 시작
+            help.style.top = bannerHeight + 'px';
+            // 남은 영역만 덮도록
+            help.style.height = `calc(100% - ${bannerHeight}px)`;
+
+            help.style.display = 'flex';
+        }
+
+
+        function hideHelpOverlay() {
+            document.getElementById('helpOverlay').style.display = 'none';
+        }
+
+        // ============================
+        // 두부/토마토 오버레이 제어 함수
+        // ============================
+        function showTofuOverlay() {
+            document.getElementById('tofuOverlay').classList.remove('hidden');
+        }
+        function hideTofuOverlay() {
+            document.getElementById('tofuOverlay').classList.add('hidden');
+        }
+        function showRecommendationOverlay() {
+            document.getElementById('recommendOverlay').classList.remove('hidden');
+        }
+        function hideRecommendationOverlay() {
+            document.getElementById('recommendOverlay').classList.add('hidden');
+        }
+
+        // ============================
+        // 메뉴 카드 아래에 버튼 삽입 (냉장고 확인하기 / 다른 메뉴 추천)
+        // ============================
+        function addMenuOptions() {
+            const container = document.createElement('div');
+            container.className = 'message bot';
+            container.style.margin = '0.8vh 0';
+            container.style.justifyContent = 'flex-start';
+
+            const profilePlaceholder = document.createElement('div');
+            profilePlaceholder.className = 'profile bot';
+            container.appendChild(profilePlaceholder);
+
+            const buttonWrapper = document.createElement('div');
+            buttonWrapper.style.display = 'flex';
+            buttonWrapper.style.gap = '1.2vh';
+
+            const fridgeBtn = document.createElement('button');
+            fridgeBtn.innerText = '냉장고 확인하기';
+            fridgeBtn.style.background = 'white';
+            fridgeBtn.style.color = '#0285f7';
+            fridgeBtn.style.border = '0.2vh solid #0285f7';
+            fridgeBtn.style.padding = '1vh 2vh';
+            fridgeBtn.style.borderRadius = '2vh';
+            fridgeBtn.style.fontSize = '1.6vh';
+            fridgeBtn.style.cursor = 'pointer';
+            fridgeBtn.onclick = () => {
+                fridgeBtn.disabled = true;
+                otherBtn.disabled = true;
+                showFridgeScanScreen(() => {
+                    showTofuOverlay();
+                    speak(
+                        '네, 눈바디 체크 완료됐어요! 오늘은 단백질 보충이 필요해 보여요. 지금 집에 있는 재료들로 두부유부초밥 어떠세요?',
+                        () => {
+                            if (!isRecognitionActive) {
+                                try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                            }
+                        }
+                    );
+                });
+            };
+            buttonWrapper.appendChild(fridgeBtn);
+
+            const otherBtn = document.createElement('button');
+            otherBtn.innerText = '다른 메뉴 추천';
+            otherBtn.style.background = 'white';
+            otherBtn.style.color = '#0285f7';
+            otherBtn.style.border = '0.2vh solid #0285f7';
+            otherBtn.style.padding = '1vh 2vh';
+            otherBtn.style.borderRadius = '2vh';
+            otherBtn.style.fontSize = '1.6vh';
+            otherBtn.style.cursor = 'pointer';
+            otherBtn.onclick = () => {
+                fridgeBtn.disabled = true;
+                otherBtn.disabled = true;
+                showRecommendationOverlay();
+                speak(
+                    '그럼 토마토 계란 볶음은 어떠세요? 굴소스도 있으니까 한 스푼 정도면 적당한 나트륨에 딱 적절해요! 괜찮으시다면 레시피 보여 드릴까요?',
+                    () => {
+                        if (!isRecognitionActive) {
+                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                        }
+                    }
+                );
+            };
+            buttonWrapper.appendChild(otherBtn);
+
+            container.appendChild(buttonWrapper);
+            chatBox.appendChild(container);
+            container.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+
+
+
+
+        // ============================
+        // 수정된 sendToWit 함수
+        // ============================
+        function sendToWit(text) {
+            fetch(`https://api.wit.ai/message?v=20200513&q=${encodeURIComponent(text)}`, {
+                headers: { Authorization: 'Bearer SHSLXMAXFTGHNIE4RVHAVOGJDM5BWE5J' }
+            })
+                .then(r => r.json())
+                .then(data => {
+                    const intent = data.intents?.[0]?.name || 'unknown';
+                    switch (intent) {
+                        case 'eyebody_check':
+                            reply('눈바디 체크를 위한 준비를 시작할게요! 스마트 냉장고 앞에 서 주세요.', startVideoInBubble);
+                            break;
+
+                        case 'ask_how_changed':
+                            reply('저번 주 눈바디와 비교를 진행했어요. 혹시 최근에 야식 먹은 적이 몇 번 있으신가요? 일주일 전보다 복부 눈바디가 달라진 게 보여요.', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                            break;
+
+                        case 'set_diet_mode':
+                            reply('그런 날도 있는 거죠. 저도 어제 치킨 먹고 잤어요. 오늘부터 다시 열심히 하면 돼요! 오늘 6시부터 내일 오전 6시까지 냉장고 제어 상태에 돌입합니다.', () => {
+                                showDietModeScreen(() => {
+                                    if (!isRecognitionActive) {
+                                        try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                    }
+                                });
+                            });
+                            break;
+
+                        case 'lunch_suggestion':
+                            showFridgeScanScreen(() => {
+                                showTofuOverlay();
+                                speak(
+                                    '네, 눈바디 체크 완료됐어요! 오늘은 단백질 보충이 필요해 보여요. 지금 집에 있는 재료들로 두부유부초밥 어떠세요?',
+                                    () => {
+                                        if (!isRecognitionActive) {
+                                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                        }
+                                    }
+                                );
+                            });
+                            break;
+
+                        case 'want_chinese':
+                            hideTofuOverlay();
+
+                            let otherBtn2 = Array.from(document.querySelectorAll('button'))
+                                .find(b => b.innerText === '다른 메뉴 추천' && !b.disabled);
+
+                            if (!otherBtn2) {
+                                addMenuOptions();
+
+                                setTimeout(() => {
+                                    otherBtn2 = Array.from(document.querySelectorAll('button'))
+                                        .find(b => b.innerText === '다른 메뉴 추천' && !b.disabled);
+                                    if (otherBtn2) {
+                                        otherBtn2.style.background = '#0285f7';
+                                        otherBtn2.style.color = 'white';
+
+                                        setTimeout(() => {
+                                            showFridgeScanScreen(() => {
+                                                showRecommendationOverlay();
+                                                speak(
+                                                    '그럼 토마토 계란 볶음은 어떠세요? 굴소스도 있으니까 한 스푼 정도면 적당한 나트륨에 딱 적절해요! 괜찮으시다면 레시피 보여 드릴까요?',
+                                                    () => {
+                                                        if (!isRecognitionActive) {
+                                                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                                        }
+                                                    }
+                                                );
+                                            });
+                                        }, 1500);
+                                    }
+                                }, 100);
+                            } else {
+                                otherBtn2.style.background = '#0285f7';
+                                otherBtn2.style.color = 'white';
+
+                                setTimeout(() => {
+                                    showFridgeScanScreen(() => {
+                                        showRecommendationOverlay();
+                                        speak(
+                                            '그럼 토마토 계란 볶음은 어떠세요? 굴소스도 있으니까 한 스푼 정도면 적당한 나트륨에 딱 적절해요! 괜찮으시다면 레시피 보여 드릴까요?',
+                                            () => {
+                                                if (!isRecognitionActive) {
+                                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                                }
+                                            }
+                                        );
+                                    });
+                                }, 1500);
+                            }
+
+                            if (!isRecognitionActive) {
+                                try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                            }
+                            break;
+
+                        case 'request_ingredients':
+                            if (!document.getElementById('tofuOverlay').classList.contains('hidden')) {
+                                hideTofuOverlay();
+                                showRecipeScreen();  // 🟢 이렇게 레시피 화면 띄우기
+                                reply(
+                                    '두부 유부초밥 레시피가 준비되었어요! 맛있게 드세요 :)',
+                                    () => {
+                                        if (!isRecognitionActive) {
+                                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                        }
+                                    }
+                                );
+                            }
+                            else if (!document.getElementById('recommendOverlay').classList.contains('hidden')) {
+                                hideRecommendationOverlay();
+                                showRecipeScreen();  // 🟢 여기도 레시피 화면 띄우기
+                                reply(
+                                    '풀어 둔 달걀 2개, 한입 크기로 자른 토마토 1개, 식용유 한 스푼, 굴소스가 준비되면 말해 주세요!',
+                                    () => {
+                                        if (!isRecognitionActive) {
+                                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                        }
+                                    }
+                                );
+                            }
+                            break;
+
+                        case 'replace_ingredient':
+                            reply('대파는 패스해도 충분해요. 아니면 다진 마늘로 대체해서 볶아도 맛있어요!', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                            break;
+
+                        case 'use_paprika':
+                            reply('네, 기름을 살짝 두른 팬에 먹기 좋게 자른 토마토를 넣어서 중불로 볶아 주시면 돼요!', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                            break;
+
+                        case 'ask_when_egg':
+                            reply('토마토를 중불에서 2~3분 정도 볶고, 살짝 물러지고 국물이 생기기 시작하면 풀어둔 계란을 넣고 함께 볶아주시면 돼요! 굴소스는 계란과 함께 한 스푼 넣어 주시면 딱 좋아요.', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                            break;
+
+                        case 'completed':
+                            // → 음성 재생과 함께 “기록 화면(recordOverlay)” 띄우기
+                            showRecordScreen();
+                            reply('완성하셨군요! 사진으로 기록하시겠어요?', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                            break;
+
+                        case 'farewell':
+                            // 1) recordOverlay가 떠 있다면 (사용자가 “아니”라고 대답하여 축소 질문을 거절했을 때)
+                            if (document.getElementById('recordOverlay')) {
+                                // record 화면의 텍스트를 바꿔 준다.
+                                const txtEl = document.querySelector('#recordOverlay .record-text');
+                                txtEl.innerHTML = '오늘의 식단,<br/>눈바디 변화에도 반영해둘게요 :)';
+                            }
+
+                            // 2) AI가 인사 멘트 출력
+                            reply('대화를 종료하겠습니다. 언제든지 또 불러주세요!', () => {
+                                // 음성이 끝난 뒤 인식 재개하지 않아도 됨
+                            });
+                            isChatting = false;
+
+                            // 3) 3초 후 메인(초기) 화면으로 돌아가기
+                            setTimeout(() => {
+                                location.reload();
+                            }, 3000);
+                            break;
+
+                        default:
+                            reply('죄송해요, 다시 한번 말씀해주실래요?', () => {
+                                if (!isRecognitionActive) {
+                                    try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                                }
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    reply('오류가 발생했어요.', () => {
+                        if (!isRecognitionActive) {
+                            try { recognitionChat.start(); } catch (e) { console.warn(e); }
+                        }
+                    });
+                });
+        }
+
+        // 채팅 스크롤 유지
+        window.addEventListener('resize', () => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+    <!-- 이거 -->
+</body>
+
+</html>
